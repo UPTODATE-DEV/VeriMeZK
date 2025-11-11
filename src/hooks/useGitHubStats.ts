@@ -31,7 +31,7 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
         // Get repo info from config
         const repoUrl = config.github.repoUrl;
         const urlMatch = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-        
+
         if (!urlMatch) {
           throw new Error('Invalid GitHub repository URL');
         }
@@ -45,13 +45,13 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
             Accept: 'application/vnd.github.v3+json',
           },
         });
-        
+
         if (!repoResponse.ok) {
           const errorText = await repoResponse.text();
           console.error('GitHub API error:', repoResponse.status, errorText);
           throw new Error(`Failed to fetch repository info: ${repoResponse.status}`);
         }
-        
+
         const repoData = await repoResponse.json();
 
         // Fetch open issues count (excluding pull requests)
@@ -66,7 +66,7 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
               },
             }
           );
-          
+
           if (issuesResponse.ok) {
             const issuesData = await issuesResponse.json();
             issuesCount = issuesData.total_count || 0;
@@ -81,7 +81,7 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
                 },
               }
             );
-            
+
             if (prsResponse.ok) {
               const prsData = await prsResponse.json();
               const prsCount = prsData.total_count || 0;
@@ -109,11 +109,11 @@ export function useGitHubStats(options?: UseGitHubStatsOptions): {
               },
             }
           );
-          
+
           if (commitsResponse.ok) {
             const commitsData = await commitsResponse.json();
             commitsCount = commitsData.length;
-            
+
             // Check if there are more commits by looking at Link header
             const linkHeader = commitsResponse.headers.get('Link');
             if (linkHeader && linkHeader.includes('rel="next"')) {

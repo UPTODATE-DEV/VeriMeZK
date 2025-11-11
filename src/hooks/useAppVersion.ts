@@ -8,7 +8,8 @@ interface GitHubRelease {
 }
 
 export function useAppVersion() {
-    const [version, setVersion] = useState<string>('0.1.0');
+    // Use config version as initial state (reads from env or package.json)
+    const [version, setVersion] = useState<string>(config.app.version);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -18,7 +19,7 @@ export function useAppVersion() {
                 const repoUrl = config.github.repoUrl;
                 const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
                 if (!match) {
-                    // Fallback to package.json version
+                    // Fallback to config version (from package.json or env)
                     setVersion(config.app.version);
                     setLoading(false);
                     return;
@@ -47,20 +48,20 @@ export function useAppVersion() {
                             const versionFromTag = tags[0].name.replace(/^v/, '');
                             setVersion(versionFromTag);
                         } else {
-                            // Fallback to package.json version
+                            // Fallback to config version (from package.json or env)
                             setVersion(config.app.version);
                         }
                     } else {
-                        // Fallback to package.json version
+                        // Fallback to config version (from package.json or env)
                         setVersion(config.app.version);
                     }
                 } else {
-                    // Fallback to package.json version
+                    // Fallback to config version (from package.json or env)
                     setVersion(config.app.version);
                 }
             } catch (error) {
                 console.error('Failed to fetch version from GitHub:', error);
-                // Fallback to package.json version
+                // Fallback to config version (from package.json or env)
                 setVersion(config.app.version);
             } finally {
                 setLoading(false);
@@ -72,4 +73,3 @@ export function useAppVersion() {
 
     return { version, loading };
 }
-

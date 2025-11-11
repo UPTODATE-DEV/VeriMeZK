@@ -4,6 +4,10 @@ import wasm from 'vite-plugin-wasm';
 import topLevelAwait from 'vite-plugin-top-level-await';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import path from 'path';
+import { readFileSync } from 'fs';
+
+// Read package.json version at build time
+const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -36,6 +40,7 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis',
+    'import.meta.env.VITE_PACKAGE_VERSION': JSON.stringify(packageJson.version),
   },
   server: {
     port: 3356,
