@@ -253,18 +253,20 @@
 **Technical Requirements:**
 - Design contract interface for identity proof storage:
   - Map wallet addresses to proof records
-  - Store proof hash, timestamp, and verified clauses
-  - Enable proof updates and revocation
-  - Support privacy-preserving verification queries
-- Write contract code in Midnight's contract language (likely Rust-based)
-- Implement contract functions:
-  - `storeProof(proofHash: string, clauses: string[], timestamp: u64)` - Store new proof
-  - `getProof(address: Address)` - Retrieve proof for address
-  - `verifyClaim(address: Address, claim: string)` - Verify specific claim
-  - `updateProof(proofHash: string, clauses: string[])` - Update existing proof
-  - `revokeProof()` - Revoke own proof
+  - Store proof hash, timestamp, and encrypted verified clauses (confidential state)
+  - Enable proof updates and revocation with access control
+  - Support privacy-preserving zero-knowledge verification queries
+  - Prevent overwrite attacks and unauthorized modifications
+- Write contract code in Rust (Midnight uses Rust/WASM backend)
+- Implement contract functions with security checks:
+  - `storeProof(proofHash: string, encryptedClauses: Ciphertext, timestamp: u64)` - Store new proof (prevents overwrite)
+  - `getProof(address: Address)` - Retrieve proof for address (confidential read)
+  - `verifyClaim(address: Address, claimHash: string)` - Verify specific claim via ZK (selective disclosure)
+  - `updateProof(encryptedClauses: Ciphertext)` - Update existing proof (owner-only)
+  - `revokeProof()` - Revoke own proof (set active = false, owner-only)
 - Deploy contract to Midnight testnet/mainnet
 - Integrate contract interactions with frontend
+- Implement off-chain verifier logic for initial testing
 
 **Implementation Approach:**
 1. Research Midnight contract development:
@@ -273,31 +275,42 @@
    - Identify available data types and storage options
 2. Design contract data structures:
    ```rust
-   // Pseudocode - actual syntax depends on Midnight contract language
-   struct Proof {
-       hash: String,
-       timestamp: u64,
-       clauses: Vec<String>,
-       active: bool,
+   // Midnight contract structure (Rust-based)
+   pub struct Proof {
+       pub hash: String,              // commitment or zk proof hash
+       pub timestamp: u64,            // block time
+       pub encrypted_clauses: Ciphertext, // claims stored confidentially
+       pub active: bool,               // status flag
    }
    
-   mapping(address => Proof) proofs;
+   #[state]
+   pub proofs: Map<Address, Proof>;
    ```
-3. Write contract code in `contracts/IdentityProof.sol` (or `.rs` depending on language)
+3. Write contract code in `contracts/identity_proof.rs` (Rust/WASM for Midnight)
 4. Compile contract to bytecode
 5. Create deployment script in `scripts/deploy-contract.ts`
 6. Deploy contract using Midnight SDK:
    - Use `initializeMidnightAPI` with contract bytecode
    - Store contract address in environment/config
-7. Create contract interaction utilities in `src/lib/midnight/contract.ts`:
-   - `storeProof()` - Call contract to store proof
-   - `getProof()` - Read contract state
-   - `verifyClaim()` - Verify specific claim
-8. Update `TransactionSigner.tsx`:
-   - Call contract `storeProof` function instead of just metadata
-   - Handle contract call responses
-9. Add contract state reading hooks in `src/hooks/useMidnight.ts`
-10. Create proof verification page for public verification
+7. Implement security checks in contract:
+   - Prevent overwrite attacks: `require(!proofs.contains_key(addr), "Proof already exists")`
+   - Access control for updates: `require(msg.sender == addr, "Unauthorized")`
+   - Owner-only revocation checks
+8. Create contract interaction utilities in `src/lib/midnight/contract.ts`:
+   - `storeProof()` - Call contract to store proof (with overwrite protection)
+   - `getProof()` - Read contract state (confidential read)
+   - `verifyClaim()` - Verify specific claim via zero-knowledge (selective disclosure)
+9. Update `TransactionSigner.tsx`:
+   - Call contract `storeProof` function with encrypted clauses
+   - Handle contract call responses and errors
+10. Add contract state reading hooks in `src/hooks/useMidnight.ts`
+11. Create proof verification page (`src/pages/VerifyProof.tsx`):
+    - Upload proof.json
+    - Send proofHash to contract via Midnight SDK
+    - Display ✅ Verified or ❌ Invalid status
+    - Support selective disclosure verification
+12. Add `.env.local` configuration for `MIDNIGHT_CONTRACT_ADDRESS`
+13. Implement off-chain verifier logic for initial testing
 
 **Acceptance Criteria:**
 - Contract code written and tested
@@ -319,15 +332,31 @@
 - Midnight testnet/mainnet access
 
 **Contract Functions:**
-- `storeProof(proofHash, clauses, timestamp)` - Store identity proof
-- `getProof(address)` - Retrieve proof for wallet address
-- `verifyClaim(address, claim)` - Verify specific claim (e.g., "adult:true")
-- `updateProof(proofHash, clauses)` - Update existing proof
-- `revokeProof()` - Revoke own proof (set active = false)
+- `storeProof(proofHash, encryptedClauses, timestamp)` - Store identity proof (prevents overwrite)
+- `getProof(address)` - Retrieve proof for wallet address (confidential read)
+- `verifyClaim(address, claimHash)` - Verify specific claim via ZK (selective disclosure, e.g., "isAdult" without revealing full proof)
+- `updateProof(encryptedClauses)` - Update existing proof (owner-only access control)
+- `revokeProof()` - Revoke own proof (set active = false, owner-only)
+
+**Security Features:**
+- Overwrite protection: Prevents replacing existing proofs without authorization
+- Access control: Only proof owner can update or revoke their proof
+- Input validation: Validates proof hash format and encrypted clause structure
+- State consistency: Ensures active flag is properly managed
 
 **Privacy Considerations:**
-- Use Midnight's confidential computing features
-- Encrypt sensitive data in contract state
-- Allow selective disclosure of claims
-- Support zero-knowledge verification queries
+- Use Midnight's confidential computing features for encrypted state storage
+- Store `encrypted_clauses` as `Ciphertext` instead of plain strings
+- Enable selective disclosure: Verify claims (e.g., "isAdult") without revealing full proof
+- Support zero-knowledge verification queries off-chain, then confirm proof hash on-chain
+- Performs ZK verification off-chain, then matches proof hash on-chain for efficiency
+
+**Integration Best Practices:**
+- Keep verifier logic off-chain for initial testing and performance
+- Store `MIDNIGHT_CONTRACT_ADDRESS` in `.env.local` configuration
+- Frontend verification page should:
+  - Accept proof.json upload
+  - Send proofHash to contract via Midnight SDK
+  - Display ✅ Verified or ❌ Invalid status
+  - Support selective claim verification
 
