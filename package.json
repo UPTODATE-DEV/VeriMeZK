@@ -38,20 +38,21 @@
     "dependencies": {
         "@meshsdk/react": "^1.0.0",
         "@meshsdk/core": "^1.0.0",
-        "@meshsdk/midnight-setup": "^1.0.0",
+        "react": "^18.3.0",
+        "react-dom": "^18.3.0",
+        "react-webcam": "^7.2.0",
+        "jsqr": "^1.4.0",
+        "face-api.js": "^0.22.2",
+        "framer-motion": "^11.0.0",
+        "next-themes": "^0.2.1"
+    },
+    "optionalDependencies": {
         "@midnight-ntwrk/dapp-connector-api": "3.0.0",
         "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "2.0.2",
         "@midnight-ntwrk/midnight-js-http-client-proof-provider": "2.0.2",
         "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "2.0.2",
         "@midnight-ntwrk/midnight-js-level-private-state-provider": "2.0.2",
-        "@midnight-ntwrk/midnight-js-network-id": "2.0.2",
-        "react": "^18.3.0",
-        "react-dom": "^18.3.0",
-        "react-webcam": "^7.2.0",
-        "jsQR": "^1.4.0",
-        "face-api.js": "^0.22.2",
-        "framer-motion": "^11.0.0",
-        "next-themes": "^0.2.1"
+        "@midnight-ntwrk/midnight-js-network-id": "2.0.2"
     },
     "devDependencies": {
         "@types/react": "^18.2.0",

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
-import jsQR from 'jsQR';
+import jsQR from 'jsqr';
 import { useVerification } from '@/contexts/VerificationContext';
 import { Card } from '@/components/shared/Card';
 import { Button } from '@/components/shared/Button';

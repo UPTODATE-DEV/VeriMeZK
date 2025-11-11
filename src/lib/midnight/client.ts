@@ -1,9 +1,24 @@
-import { MidnightSetupAPI } from '@meshsdk/midnight-setup';
+// Midnight SDK integration - optional, will use mock if packages unavailable
 import type { MidnightProviders } from '@/types';
 import { setupProviders } from './providers';
 
+let MidnightSetupAPI: any = null;
 let midnightAPI: any = null;
 let providers: MidnightProviders | null = null;
+
+// Lazy load Midnight SDK
+async function getMidnightSetupAPI() {
+  if (MidnightSetupAPI) return MidnightSetupAPI;
+  
+  try {
+    const module = await import('@midnight-ntwrk/dapp-connector-api');
+    MidnightSetupAPI = module.MidnightSetupAPI || module.default?.MidnightSetupAPI;
+    return MidnightSetupAPI;
+  } catch (error) {
+    console.warn('Midnight SDK packages not available. Install @midnight-ntwrk packages when available.');
+    return null;
+  }
+}
 
 export async function getMidnightClient() {
     if (!providers) {
@@ -13,30 +28,35 @@ export async function getMidnightClient() {
 }
 
 export async function initializeMidnightAPI(contractInstance?: any, contractAddress?: string) {
-    if (midnightAPI) {
-        return midnightAPI;
-    }
+  const API = await getMidnightSetupAPI();
+  if (!API) {
+    throw new Error('Midnight SDK not available. Please install @midnight-ntwrk packages.');
+  }
 
-    const providers = await getMidnightClient();
-
-    if (contractAddress) {
-        // Join existing contract
-        midnightAPI = await MidnightSetupAPI.joinContract(
-            providers,
-            contractInstance,
-            contractAddress
-        );
-    } else if (contractInstance) {
-        // Deploy new contract
-        midnightAPI = await MidnightSetupAPI.deployContract(
-            providers,
-            contractInstance
-        );
-    } else {
-        throw new Error('Either contractInstance or contractAddress must be provided');
-    }
-
+  if (midnightAPI) {
     return midnightAPI;
+  }
+
+  const providers = await getMidnightClient();
+
+  if (contractAddress) {
+    // Join existing contract
+    midnightAPI = await API.joinContract(
+      providers,
+      contractInstance,
+      contractAddress
+    );
+  } else if (contractInstance) {
+    // Deploy new contract
+    midnightAPI = await API.deployContract(
+      providers,
+      contractInstance
+    );
+  } else {
+    throw new Error('Either contractInstance or contractAddress must be provided');
+  }
+
+  return midnightAPI;
 }
 
 export async function getContractState() {
