@@ -4,11 +4,12 @@ import config from '@/config';
 
 export async function setupProviders(): Promise<MidnightProviders> {
   try {
-    const { FetchZkConfigProvider } = await import('@midnight-ntwrk/midnight-js-fetch-zk-config-provider');
-    const { httpClientProofProvider } = await import('@midnight-ntwrk/midnight-js-http-client-proof-provider');
-    const { indexerPublicDataProvider } = await import('@midnight-ntwrk/midnight-js-indexer-public-data-provider');
-    const { levelPrivateStateProvider } = await import('@midnight-ntwrk/midnight-js-level-private-state-provider');
-    const { networkId } = await import('@midnight-ntwrk/midnight-js-network-id');
+    // Use dynamic imports with vite-ignore to prevent build-time resolution
+    const { FetchZkConfigProvider } = await import(/* @vite-ignore */ '@midnight-ntwrk/midnight-js-fetch-zk-config-provider');
+    const { httpClientProofProvider } = await import(/* @vite-ignore */ '@midnight-ntwrk/midnight-js-http-client-proof-provider');
+    const { indexerPublicDataProvider } = await import(/* @vite-ignore */ '@midnight-ntwrk/midnight-js-indexer-public-data-provider');
+    const { levelPrivateStateProvider } = await import(/* @vite-ignore */ '@midnight-ntwrk/midnight-js-level-private-state-provider');
+    const { networkId } = await import(/* @vite-ignore */ '@midnight-ntwrk/midnight-js-network-id');
 
     const zkConfigProvider = new FetchZkConfigProvider({
       zkConfigUrl: config.midnight.rpcUrl,
