@@ -9,8 +9,20 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  React.useEffect(() => {
+    if (isOpen) {
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <>
           <motion.div
@@ -19,12 +31,16 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            aria-hidden="true"
           />
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? 'modal-title' : undefined}
           >
             <motion.div
               className="glass-modal rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
@@ -35,7 +51,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             >
               {title && (
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold text-black dark:text-white">{title}</h2>
+                  <h2 id="modal-title" className="text-2xl font-bold text-black dark:text-white">{title}</h2>
                   <button
                     onClick={onClose}
                     className="glass-light rounded-lg p-2 border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all"
