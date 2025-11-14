@@ -1,4 +1,5 @@
 // Configuration loader
+// Version priority: VITE_APP_VERSION env var > VITE_PACKAGE_VERSION (from package.json) > fallback
 export const config = {
   midnight: {
     networkId: import.meta.env.VITE_MIDNIGHT_NETWORK_ID || '1',
@@ -13,7 +14,7 @@ export const config = {
   },
   app: {
     name: import.meta.env.VITE_APP_NAME || 'VeriMeZK',
-    version: import.meta.env.VITE_APP_VERSION || '0.1.0',
+    version: import.meta.env.VITE_APP_VERSION || import.meta.env.VITE_PACKAGE_VERSION || '0.0.0',
     landingPageUrl: import.meta.env.VITE_LANDING_PAGE_URL || 'https://verimezk.org',
   },
   github: {
@@ -30,6 +31,7 @@ export const config = {
   features: {
     enableMidnightSDK: import.meta.env.VITE_ENABLE_MIDNIGHT_SDK === 'true',
     enableFaceRecognition: import.meta.env.VITE_ENABLE_FACE_RECOGNITION !== 'false',
+    enableGitHubAPI: import.meta.env.VITE_ENABLE_GITHUB_API !== 'false', // Default: true, set to 'false' to disable
   },
 };
 
