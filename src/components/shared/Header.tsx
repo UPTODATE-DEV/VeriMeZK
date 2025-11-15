@@ -6,6 +6,7 @@ import { useWalletDetection } from '@/hooks/useWalletDetection';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import config from '@/config';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MdSettings } from 'react-icons/md';
 
 export function Header() {
   const { stats, loading } = useGitHubStats();
@@ -70,6 +71,11 @@ export function Header() {
         <div className="flex items-center justify-between h-14 sm:h-16">
           <motion.a
             href="/"
+            onClick={e => {
+              e.preventDefault();
+              window.history.pushState({}, '', '/');
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
             className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl font-bold text-black dark:text-white touch-manipulation"
             aria-label="VeriMeZK Home"
             whileHover={{ scale: 1.05 }}
@@ -202,33 +208,6 @@ export function Header() {
               )}
             </AnimatePresence>
 
-            {/* Settings Link */}
-            <motion.a
-              href="/settings"
-              className="flex items-center gap-2 glass-light rounded-lg px-3 py-1.5 border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all touch-manipulation"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              title="Settings"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-black dark:text-white"
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M12 1v6m0 6v6m5.66-13a10 10 0 0 1 0 14M6.34 7a10 10 0 0 0 0 14M20 12h-6M4 12h6" />
-              </svg>
-              <span className="hidden sm:inline text-sm font-medium text-black dark:text-white">
-                Settings
-              </span>
-            </motion.a>
-
             {/* Documentation Link */}
             <motion.a
               href={config.links.documentation}
@@ -329,6 +308,22 @@ export function Header() {
                   </span>
                 </div>
               )}
+            </motion.a>
+
+            {/* Settings Link */}
+            <motion.a
+              href="/settings"
+              onClick={e => {
+                e.preventDefault();
+                window.history.pushState({}, '', '/settings');
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }}
+              className="flex items-center justify-center glass-light rounded-lg p-2 border border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all touch-manipulation"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              title="Settings"
+            >
+              <MdSettings className="text-xl text-black dark:text-white" />
             </motion.a>
 
             <ThemeSwitcher />

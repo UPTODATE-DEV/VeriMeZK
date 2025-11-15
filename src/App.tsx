@@ -175,14 +175,27 @@ function AppContent() {
 }
 
 function App() {
+  const [currentPath, setCurrentPath] = React.useState(
+    typeof window !== 'undefined' ? window.location.pathname : '/'
+  );
+
+  React.useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // Check if we're on the mobile capture page
-  const isMobilePage = typeof window !== 'undefined' && window.location.pathname === '/mobile';
+  const isMobilePage = currentPath === '/mobile';
 
   // Check if we're on the new proof page
-  const isNewProofPage = typeof window !== 'undefined' && window.location.pathname === '/new-proof';
+  const isNewProofPage = currentPath === '/new-proof';
 
   // Check if we're on the settings page
-  const isSettingsPage = typeof window !== 'undefined' && window.location.pathname === '/settings';
+  const isSettingsPage = currentPath === '/settings';
 
   if (isMobilePage) {
     return (
