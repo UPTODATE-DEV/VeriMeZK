@@ -1,15 +1,32 @@
 import { useState } from 'react';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
+import { Switch } from '@/components/ui/switch';
+import { FaWallet } from 'react-icons/fa';
 import type { SettingsSectionProps } from '@/pages/Settings';
+
+interface WalletCardProps {
+  name: string;
+  color: string;
+  bgColor: string;
+}
+
+function WalletCard({ name, color, bgColor }: WalletCardProps) {
+  return (
+    <div
+      className={`flex items-center justify-center gap-2 p-3 rounded-lg border border-black/10 dark:border-white/10`}
+      style={{ backgroundColor: bgColor }}
+    >
+      <FaWallet className="text-lg" style={{ color }} />
+      <span className="text-sm font-medium" style={{ color }}>
+        {name}
+      </span>
+    </div>
+  );
+}
 
 export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
   const { connected, name: walletName, address, disconnect } = useWalletConnection();
   const [autoConnect, setAutoConnect] = useState(true);
-
-  const handleAutoConnectToggle = () => {
-    setAutoConnect(!autoConnect);
-    onChangesMade();
-  };
 
   const handleDisconnect = () => {
     disconnect();
@@ -82,29 +99,23 @@ export function WalletSettings({ onChangesMade }: SettingsSectionProps) {
               Automatically connect to your wallet when opening the app
             </p>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer ml-4">
-            <input
-              type="checkbox"
-              checked={autoConnect}
-              onChange={handleAutoConnectToggle}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-          </label>
+          <Switch
+            checked={autoConnect}
+            onCheckedChange={checked => {
+              setAutoConnect(checked);
+              onChangesMade();
+            }}
+            className="ml-4"
+          />
         </div>
 
         {/* Supported Wallets */}
         <div className="p-4 rounded-lg border border-black/20 dark:border-white/20">
           <h3 className="font-semibold text-black dark:text-white mb-3">Supported Wallets</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {['Nami', 'Eternl', 'Flint'].map(wallet => (
-              <div
-                key={wallet}
-                className="flex items-center justify-center gap-2 p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-black/10 dark:border-white/10"
-              >
-                <span className="text-sm font-medium text-black dark:text-white">{wallet}</span>
-              </div>
-            ))}
+            <WalletCard name="Nami" color="#1E40AF" bgColor="#DBEAFE" />
+            <WalletCard name="Eternl" color="#059669" bgColor="#D1FAE5" />
+            <WalletCard name="Flint" color="#7C3AED" bgColor="#EDE9FE" />
           </div>
         </div>
 

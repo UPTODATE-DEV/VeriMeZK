@@ -1,5 +1,60 @@
 import { useState } from 'react';
+import { FiTrash2, FiRefreshCw, FiDatabase, FiAlertTriangle } from 'react-icons/fi';
 import type { SettingsSectionProps } from '@/pages/Settings';
+
+interface ClearDataCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  buttonText: string;
+  onClick: () => void;
+  variant?: 'warning' | 'danger';
+}
+
+function ClearDataCard({
+  icon,
+  title,
+  description,
+  buttonText,
+  onClick,
+  variant = 'warning',
+}: ClearDataCardProps) {
+  const colors = {
+    warning: {
+      border: 'border-yellow-200 dark:border-yellow-800',
+      bg: 'bg-yellow-50/50 dark:bg-yellow-900/10',
+      text: 'text-yellow-700 dark:text-yellow-300',
+      button:
+        'text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800 hover:bg-yellow-100/50 dark:hover:bg-yellow-900/20',
+    },
+    danger: {
+      border: 'border-red-200 dark:border-red-800',
+      bg: 'bg-red-50/50 dark:bg-red-900/10',
+      text: 'text-red-700 dark:text-red-300',
+      button: 'text-white bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800',
+    },
+  };
+
+  const style = colors[variant];
+
+  return (
+    <div className={`p-4 rounded-lg border ${style.border} ${style.bg}`}>
+      <div className="flex items-start gap-3 mb-3">
+        <div className={`text-xl ${style.text} mt-0.5`}>{icon}</div>
+        <div className="flex-1">
+          <h3 className="font-semibold text-black dark:text-white mb-1">{title}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+        </div>
+      </div>
+      <button
+        onClick={onClick}
+        className={`px-4 py-2 text-sm font-medium border rounded-lg transition-all ${style.button}`}
+      >
+        {buttonText}
+      </button>
+    </div>
+  );
+}
 
 export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
   const [confirmText, setConfirmText] = useState('');
@@ -81,73 +136,45 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
 
       <div className="space-y-4">
         {/* Clear Verifications */}
-        <div className="p-4 rounded-lg border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20">
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <h3 className="font-semibold text-black dark:text-white mb-1">
-                Clear Verification Proofs
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Delete all stored verification proofs and transaction history
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleClearVerifications}
-            className="px-4 py-2 text-sm font-medium text-orange-700 dark:text-orange-300 border border-orange-300 dark:border-orange-700 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all"
-          >
-            Clear Verifications
-          </button>
-        </div>
+        <ClearDataCard
+          icon={<FiTrash2 />}
+          title="Clear Verification Proofs"
+          description="Delete all stored verification proofs and transaction history"
+          buttonText="Clear Verifications"
+          onClick={handleClearVerifications}
+        />
 
         {/* Reset Settings */}
-        <div className="p-4 rounded-lg border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20">
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <h3 className="font-semibold text-black dark:text-white mb-1">Reset Settings</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Restore all settings to their default values
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleClearSettings}
-            className="px-4 py-2 text-sm font-medium text-orange-700 dark:text-orange-300 border border-orange-300 dark:border-orange-700 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all"
-          >
-            Reset Settings
-          </button>
-        </div>
+        <ClearDataCard
+          icon={<FiRefreshCw />}
+          title="Reset Settings"
+          description="Restore all settings to their default values"
+          buttonText="Reset Settings"
+          onClick={handleClearSettings}
+        />
 
         {/* Clear Cache */}
-        <div className="p-4 rounded-lg border border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20">
-          <div className="flex items-start justify-between mb-3">
-            <div>
-              <h3 className="font-semibold text-black dark:text-white mb-1">Clear Cache</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Remove temporary cached data and session information
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleClearCache}
-            className="px-4 py-2 text-sm font-medium text-orange-700 dark:text-orange-300 border border-orange-300 dark:border-orange-700 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-all"
-          >
-            Clear Cache
-          </button>
-        </div>
+        <ClearDataCard
+          icon={<FiDatabase />}
+          title="Clear Cache"
+          description="Remove temporary cached data and session information"
+          buttonText="Clear Cache"
+          onClick={handleClearCache}
+        />
 
         <hr className="border-black/10 dark:border-white/10" />
 
         {/* Clear All Data - Danger Zone */}
-        <div className="p-4 rounded-lg border-2 border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20">
-          <div className="mb-4">
-            <h3 className="font-semibold text-red-700 dark:text-red-300 mb-1 flex items-center gap-2">
-              <span>⚠️</span> Danger Zone
-            </h3>
-            <p className="text-sm text-red-600 dark:text-red-400">
-              This will permanently delete ALL data including verifications, settings, and cache.
-              This action cannot be undone!
-            </p>
+        <div className="p-4 rounded-lg border-2 border-red-200 dark:border-red-800 bg-red-50/50 dark:bg-red-900/10">
+          <div className="mb-4 flex items-start gap-3">
+            <FiAlertTriangle className="text-xl text-red-700 dark:text-red-300 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-red-700 dark:text-red-300 mb-1">Danger Zone</h3>
+              <p className="text-sm text-red-600 dark:text-red-400">
+                This will permanently delete ALL data including verifications, settings, and cache.
+                This action cannot be undone!
+              </p>
+            </div>
           </div>
 
           <div className="mb-3">
@@ -159,7 +186,7 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
               value={confirmText}
               onChange={e => setConfirmText(e.target.value)}
               placeholder="DELETE ALL"
-              className="w-full px-4 py-2 rounded-lg border-2 border-red-300 dark:border-red-700 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-4 py-2 rounded-lg border-2 border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
@@ -173,7 +200,7 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
         </div>
 
         {/* Info */}
-        <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+        <div className="p-4 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800">
           <p className="text-sm text-blue-900 dark:text-blue-100">
             <strong>💡 Tip:</strong> Export your data before clearing to create a backup that you
             can restore later.

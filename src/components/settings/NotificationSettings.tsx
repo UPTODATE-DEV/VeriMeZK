@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
 import { SettingsCard } from './SettingsCard';
+import { Switch } from '@/components/ui/switch';
 
 export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
   const [settings, setSettings] = useState({
@@ -29,13 +30,6 @@ export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
     }
   };
 
-  const ToggleSwitch = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
-    <label className="relative inline-flex items-center cursor-pointer">
-      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only peer" />
-      <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-    </label>
-  );
-
   return (
     <div className="space-y-6">
       <div>
@@ -51,9 +45,9 @@ export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
           description="Get notified when verification proof is generated"
         >
           <div className="flex justify-end">
-            <ToggleSwitch
+            <Switch
               checked={settings.verificationComplete}
-              onChange={() => handleToggle('verificationComplete')}
+              onCheckedChange={() => handleToggle('verificationComplete')}
             />
           </div>
         </SettingsCard>
@@ -63,9 +57,9 @@ export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
           description="Alert me when my document is about to expire"
         >
           <div className="flex justify-end">
-            <ToggleSwitch
+            <Switch
               checked={settings.expiryWarnings}
-              onChange={() => handleToggle('expiryWarnings')}
+              onCheckedChange={() => handleToggle('expiryWarnings')}
             />
           </div>
         </SettingsCard>
@@ -75,18 +69,18 @@ export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
           description="Notify me about blockchain transaction status"
         >
           <div className="flex justify-end">
-            <ToggleSwitch
+            <Switch
               checked={settings.transactionUpdates}
-              onChange={() => handleToggle('transactionUpdates')}
+              onCheckedChange={() => handleToggle('transactionUpdates')}
             />
           </div>
         </SettingsCard>
 
         <SettingsCard title="System Alerts" description="Important updates and security notices">
           <div className="flex justify-end">
-            <ToggleSwitch
+            <Switch
               checked={settings.systemAlerts}
-              onChange={() => handleToggle('systemAlerts')}
+              onCheckedChange={() => handleToggle('systemAlerts')}
             />
           </div>
         </SettingsCard>
@@ -95,9 +89,9 @@ export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
 
         <SettingsCard title="Sound Effects" description="Play sounds for notifications">
           <div className="flex justify-end">
-            <ToggleSwitch
+            <Switch
               checked={settings.soundEnabled}
-              onChange={() => handleToggle('soundEnabled')}
+              onCheckedChange={() => handleToggle('soundEnabled')}
             />
           </div>
         </SettingsCard>

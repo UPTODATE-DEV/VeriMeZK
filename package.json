@@ -43,9 +43,13 @@
   "dependencies": {
     "@meshsdk/core": "^1.0.0",
     "@meshsdk/react": "^1.0.0",
+    "@radix-ui/react-switch": "^1.2.6",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "face-api.js": "^0.22.2",
     "framer-motion": "^11.0.0",
     "jsqr": "^1.4.0",
+    "lucide-react": "^0.553.0",
     "mrz-parser": "^0.0.1",
     "next-themes": "^0.2.1",
     "opencv-wasm": "^4.3.0-10",
@@ -54,6 +58,8 @@
     "react-dom": "^18.3.0",
     "react-icons": "^5.5.0",
     "react-webcam": "^7.2.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
     "tesseract.js": "^6.0.1"
   },
   "optionalDependencies": {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
 import { SettingsCard } from './SettingsCard';
+import { Switch } from '@/components/ui/switch';
 
 export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
   const [settings, setSettings] = useState({
@@ -40,15 +41,10 @@ export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
           description="Store your verification proofs locally for quick access"
         >
           <div className="flex items-center justify-end">
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.saveVerifications}
-                onChange={() => handleToggle('saveVerifications')}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-            </label>
+            <Switch
+              checked={settings.saveVerifications}
+              onCheckedChange={() => handleToggle('saveVerifications')}
+            />
           </div>
         </SettingsCard>
 
@@ -58,15 +54,10 @@ export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
           description="Temporarily store face data for faster re-verification (encrypted)"
         >
           <div className="flex items-center justify-end">
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.saveBiometrics}
-                onChange={() => handleToggle('saveBiometrics')}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-            </label>
+            <Switch
+              checked={settings.saveBiometrics}
+              onCheckedChange={() => handleToggle('saveBiometrics')}
+            />
           </div>
         </SettingsCard>
 
@@ -76,15 +67,10 @@ export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
           description="Help improve the app by sharing anonymous usage data"
         >
           <div className="flex items-center justify-end">
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.shareAnalytics}
-                onChange={() => handleToggle('shareAnalytics')}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-            </label>
+            <Switch
+              checked={settings.shareAnalytics}
+              onCheckedChange={() => handleToggle('shareAnalytics')}
+            />
           </div>
         </SettingsCard>
 

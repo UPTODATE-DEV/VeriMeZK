@@ -1,6 +1,30 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { FiSun, FiMoon, FiMonitor } from 'react-icons/fi';
 import type { SettingsSectionProps } from '@/pages/Settings';
+
+interface ThemeCardProps {
+  icon: React.ReactNode;
+  label: string;
+  isSelected: boolean;
+  onClick: () => void;
+}
+
+function ThemeCard({ icon, label, isSelected, onClick }: ThemeCardProps) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+        isSelected
+          ? 'border-black dark:border-white bg-black/5 dark:bg-white/5'
+          : 'border-black/20 dark:border-white/20 hover:border-black/40 dark:hover:border-white/40'
+      }`}
+    >
+      <div className="text-4xl text-black dark:text-white">{icon}</div>
+      <span className="font-medium text-black dark:text-white">{label}</span>
+    </button>
+  );
+}
 
 export function ThemeSettings({ onChangesMade }: SettingsSectionProps) {
   const { theme, setTheme, systemTheme } = useTheme();
@@ -36,50 +60,24 @@ export function ThemeSettings({ onChangesMade }: SettingsSectionProps) {
             Theme Mode
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* Light Theme */}
-            <button
+            <ThemeCard
+              icon={<FiSun />}
+              label="Light"
+              isSelected={theme === 'light'}
               onClick={() => handleThemeChange('light')}
-              className={`flex flex-col items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                theme === 'light'
-                  ? 'border-black dark:border-white bg-black/5 dark:bg-white/5'
-                  : 'border-black/20 dark:border-white/20 hover:border-black/40 dark:hover:border-white/40'
-              }`}
-            >
-              <div className="w-12 h-12 rounded-lg bg-white border border-gray-300 flex items-center justify-center">
-                <div className="w-6 h-6 rounded bg-gray-200"></div>
-              </div>
-              <span className="font-medium text-black dark:text-white">Light</span>
-            </button>
-
-            {/* Dark Theme */}
-            <button
+            />
+            <ThemeCard
+              icon={<FiMoon />}
+              label="Dark"
+              isSelected={theme === 'dark'}
               onClick={() => handleThemeChange('dark')}
-              className={`flex flex-col items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                theme === 'dark'
-                  ? 'border-black dark:border-white bg-black/5 dark:bg-white/5'
-                  : 'border-black/20 dark:border-white/20 hover:border-black/40 dark:hover:border-white/40'
-              }`}
-            >
-              <div className="w-12 h-12 rounded-lg bg-gray-900 border border-gray-700 flex items-center justify-center">
-                <div className="w-6 h-6 rounded bg-gray-700"></div>
-              </div>
-              <span className="font-medium text-black dark:text-white">Dark</span>
-            </button>
-
-            {/* System Theme */}
-            <button
+            />
+            <ThemeCard
+              icon={<FiMonitor />}
+              label="System"
+              isSelected={theme === 'system'}
               onClick={() => handleThemeChange('system')}
-              className={`flex flex-col items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                theme === 'system'
-                  ? 'border-black dark:border-white bg-black/5 dark:bg-white/5'
-                  : 'border-black/20 dark:border-white/20 hover:border-black/40 dark:hover:border-white/40'
-              }`}
-            >
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-white to-gray-900 border border-gray-400 flex items-center justify-center">
-                <div className="w-6 h-6 rounded bg-gradient-to-br from-gray-200 to-gray-700"></div>
-              </div>
-              <span className="font-medium text-black dark:text-white">System</span>
-            </button>
+            />
           </div>
         </label>
 
