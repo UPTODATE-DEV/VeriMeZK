@@ -1,47 +1,18 @@
 import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
-import { getStoredVerifications } from '@/utils/storage';
+import { useDataManagement } from '@/hooks/useDataManagement';
 
 export function ExportImportSettings({ onChangesMade }: SettingsSectionProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const { exportData, importData } = useDataManagement();
 
   const handleExportData = async () => {
     setIsExporting(true);
     try {
-      // Get all stored verifications
-      const verifications = getStoredVerifications();
-
-      // Get settings from localStorage
-      const settings = {
-        theme: localStorage.getItem('theme'),
-        language: localStorage.getItem('language'),
-        notifications: localStorage.getItem('notifications'),
-        privacy: localStorage.getItem('privacy'),
-      };
-
-      const exportData = {
-        version: '1.0',
-        timestamp: new Date().toISOString(),
-        verifications,
-        settings,
-      };
-
-      // Create blob and download
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: 'application/json',
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `verimezk-backup-${Date.now()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      await exportData();
     } catch (error) {
-      console.error('Export failed:', error);
-      alert('Failed to export data');
+      alert(error instanceof Error ? error.message : 'Failed to export data');
     } finally {
       setIsExporting(false);
     }
@@ -53,33 +24,11 @@ export function ExportImportSettings({ onChangesMade }: SettingsSectionProps) {
 
     setIsImporting(true);
     try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-
-      // Validate data structure
-      if (!data.version || !data.timestamp) {
-        throw new Error('Invalid backup file format');
-      }
-
-      // Import verifications
-      if (data.verifications && Array.isArray(data.verifications)) {
-        const existing = getStoredVerifications();
-        const merged = [...existing, ...data.verifications];
-        localStorage.setItem('verifications', JSON.stringify(merged));
-      }
-
-      // Import settings
-      if (data.settings) {
-        Object.entries(data.settings).forEach(([key, value]) => {
-          if (value) localStorage.setItem(key, value as string);
-        });
-      }
-
+      await importData(file);
       onChangesMade();
       alert('Data imported successfully! Please refresh the page.');
     } catch (error) {
-      console.error('Import failed:', error);
-      alert('Failed to import data. Please check the file format.');
+      alert(error instanceof Error ? error.message : 'Failed to import data');
     } finally {
       setIsImporting(false);
       event.target.value = '';

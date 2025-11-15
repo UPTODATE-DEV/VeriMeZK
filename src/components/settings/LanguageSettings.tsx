@@ -1,21 +1,15 @@
-import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
-
-const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  //   { code: 'es', name: 'Español', flag: '🇪🇸' },
-  //   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  //   { code: 'zh', name: '中文', flag: '🇨🇳' },
-  //   { code: 'ja', name: '日本語', flag: '🇯🇵' },
-];
+import {
+  useLanguageSettings,
+  SUPPORTED_LANGUAGES,
+  DATE_FORMATS,
+} from '@/hooks/useLanguageSettings';
 
 export function LanguageSettings({ onChangesMade }: SettingsSectionProps) {
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
-  const [dateFormat, setDateFormat] = useState('MM/DD/YYYY');
+  const { settings, setLanguage, setDateFormat } = useLanguageSettings();
 
   const handleLanguageChange = (code: string) => {
-    setSelectedLanguage(code);
+    setLanguage(code);
     onChangesMade();
   };
 
@@ -41,19 +35,19 @@ export function LanguageSettings({ onChangesMade }: SettingsSectionProps) {
               Interface Language
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {languages.map(lang => (
+              {SUPPORTED_LANGUAGES.map(lang => (
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageChange(lang.code)}
                   className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                    selectedLanguage === lang.code
+                    settings.language === lang.code
                       ? 'border-black dark:border-white bg-black/5 dark:bg-white/5'
                       : 'border-black/20 dark:border-white/20 hover:border-black/40 dark:hover:border-white/40'
                   }`}
                 >
                   <span className="text-2xl">{lang.flag}</span>
                   <span className="font-medium text-black dark:text-white">{lang.name}</span>
-                  {selectedLanguage === lang.code && (
+                  {settings.language === lang.code && (
                     <span className="ml-auto text-green-600 dark:text-green-400">✓</span>
                   )}
                 </button>
@@ -69,24 +63,20 @@ export function LanguageSettings({ onChangesMade }: SettingsSectionProps) {
               Date Format
             </span>
             <div className="space-y-2">
-              {['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD'].map(format => (
+              {DATE_FORMATS.map(({ value, label }) => (
                 <label
-                  key={format}
+                  key={value}
                   className="flex items-center gap-3 p-3 rounded-lg border border-black/20 dark:border-white/20 hover:border-black/40 dark:hover:border-white/40 cursor-pointer transition-all"
                 >
                   <input
                     type="radio"
                     name="dateFormat"
-                    checked={dateFormat === format}
-                    onChange={() => handleDateFormatChange(format)}
+                    checked={settings.dateFormat === value}
+                    onChange={() => handleDateFormatChange(value)}
                     className="w-4 h-4"
                   />
-                  <span className="text-black dark:text-white">{format}</span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400 ml-auto">
-                    {format === 'MM/DD/YYYY' && 'US Format'}
-                    {format === 'DD/MM/YYYY' && 'European Format'}
-                    {format === 'YYYY-MM-DD' && 'ISO Format'}
-                  </span>
+                  <span className="text-black dark:text-white">{value}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400 ml-auto">{label}</span>
                 </label>
               ))}
             </div>

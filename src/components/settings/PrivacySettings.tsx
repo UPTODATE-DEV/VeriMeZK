@@ -1,29 +1,18 @@
-import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
 import { SettingsCard } from './SettingsCard';
 import { Switch } from '@/components/ui/switch';
+import { usePrivacySettings } from '@/hooks/usePrivacySettings';
 
 export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
-  const [settings, setSettings] = useState({
-    saveVerifications: true,
-    saveBiometrics: false,
-    shareAnalytics: false,
-    autoDeleteAfter: '30',
-  });
+  const { settings, toggleSetting, updateAutoDelete } = usePrivacySettings();
 
   const handleToggle = (key: keyof typeof settings) => {
-    setSettings(prev => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    toggleSetting(key);
     onChangesMade();
   };
 
   const handleAutoDeleteChange = (value: string) => {
-    setSettings(prev => ({
-      ...prev,
-      autoDeleteAfter: value,
-    }));
+    updateAutoDelete(value);
     onChangesMade();
   };
 

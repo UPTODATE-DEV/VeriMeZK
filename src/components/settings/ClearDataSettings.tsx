@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FiTrash2, FiRefreshCw, FiDatabase, FiAlertTriangle } from 'react-icons/fi';
 import type { SettingsSectionProps } from '@/pages/Settings';
+import { useDataManagement } from '@/hooks/useDataManagement';
 
 interface ClearDataCardProps {
   icon: React.ReactNode;
@@ -59,12 +60,13 @@ function ClearDataCard({
 export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
   const [confirmText, setConfirmText] = useState('');
   const [isClearing, setIsClearing] = useState(false);
+  const { clearVerifications, clearSettings, clearCache, clearAllData } = useDataManagement();
 
   const handleClearVerifications = () => {
     if (!window.confirm('Are you sure you want to delete all verification proofs?')) {
       return;
     }
-    localStorage.removeItem('verifications');
+    clearVerifications();
     onChangesMade();
     alert('All verification proofs have been deleted');
   };
@@ -73,8 +75,7 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
     if (!window.confirm('Are you sure you want to reset all settings to defaults?')) {
       return;
     }
-    const keysToRemove = ['theme', 'language', 'notifications', 'privacy', 'wallet'];
-    keysToRemove.forEach(key => localStorage.removeItem(key));
+    clearSettings();
     onChangesMade();
     alert('Settings have been reset. Please refresh the page.');
   };
@@ -83,8 +84,7 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
     if (!window.confirm('Are you sure you want to clear all cached data?')) {
       return;
     }
-    // Clear session storage
-    sessionStorage.clear();
+    clearCache();
     onChangesMade();
     alert('Cache has been cleared');
   };
@@ -105,21 +105,9 @@ export function ClearDataSettings({ onChangesMade }: SettingsSectionProps) {
 
     setIsClearing(true);
     try {
-      // Clear all localStorage
-      localStorage.clear();
-      // Clear all sessionStorage
-      sessionStorage.clear();
-
-      onChangesMade();
-      alert('All data has been deleted. The page will now reload.');
-
-      // Reload after a short delay
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1000);
+      await clearAllData();
     } catch (error) {
-      console.error('Failed to clear data:', error);
-      alert('Failed to clear data');
+      alert(error instanceof Error ? error.message : 'Failed to clear data');
     } finally {
       setIsClearing(false);
     }

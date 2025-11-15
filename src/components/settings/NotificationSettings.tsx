@@ -1,32 +1,20 @@
-import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
 import { SettingsCard } from './SettingsCard';
 import { Switch } from '@/components/ui/switch';
+import { useNotificationSettings } from '@/hooks/useNotificationSettings';
 
 export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
-  const [settings, setSettings] = useState({
-    verificationComplete: true,
-    expiryWarnings: true,
-    transactionUpdates: true,
-    systemAlerts: true,
-    soundEnabled: false,
-    desktopNotifications: false,
-  });
+  const { settings, toggleSetting, requestDesktopNotifications } = useNotificationSettings();
 
   const handleToggle = (key: keyof typeof settings) => {
-    setSettings(prev => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    toggleSetting(key);
     onChangesMade();
   };
 
-  const requestNotificationPermission = async () => {
-    if ('Notification' in window) {
-      const permission = await Notification.requestPermission();
-      if (permission === 'granted') {
-        handleToggle('desktopNotifications');
-      }
+  const handleRequestNotifications = async () => {
+    const granted = await requestDesktopNotifications();
+    if (granted) {
+      onChangesMade();
     }
   };
 
@@ -102,7 +90,7 @@ export function NotificationSettings({ onChangesMade }: SettingsSectionProps) {
         >
           <div className="flex justify-end">
             <button
-              onClick={requestNotificationPermission}
+              onClick={handleRequestNotifications}
               className="px-4 py-2 text-sm font-medium text-black dark:text-white border border-black/20 dark:border-white/20 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all"
             >
               {settings.desktopNotifications ? 'Enabled' : 'Enable'}
