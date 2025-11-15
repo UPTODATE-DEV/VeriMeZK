@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { SettingsSectionProps } from '@/pages/Settings';
+import { SettingsCard } from './SettingsCard';
 
 export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
   const [settings, setSettings] = useState({
@@ -34,69 +35,61 @@ export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
 
       <div className="space-y-4">
         {/* Save Verifications */}
-        <div className="flex items-start justify-between p-4 rounded-lg border border-black/20 dark:border-white/20">
-          <div className="flex-1">
-            <h3 className="font-semibold text-black dark:text-white mb-1">
-              Save Verification History
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Store your verification proofs locally for quick access
-            </p>
+        <SettingsCard
+          title="Save Verification History"
+          description="Store your verification proofs locally for quick access"
+        >
+          <div className="flex items-center justify-end">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.saveVerifications}
+                onChange={() => handleToggle('saveVerifications')}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
+            </label>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer ml-4">
-            <input
-              type="checkbox"
-              checked={settings.saveVerifications}
-              onChange={() => handleToggle('saveVerifications')}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-          </label>
-        </div>
+        </SettingsCard>
 
         {/* Save Biometrics */}
-        <div className="flex items-start justify-between p-4 rounded-lg border border-black/20 dark:border-white/20">
-          <div className="flex-1">
-            <h3 className="font-semibold text-black dark:text-white mb-1">Cache Biometric Data</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Temporarily store face data for faster re-verification (encrypted)
-            </p>
+        <SettingsCard
+          title="Cache Biometric Data"
+          description="Temporarily store face data for faster re-verification (encrypted)"
+        >
+          <div className="flex items-center justify-end">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.saveBiometrics}
+                onChange={() => handleToggle('saveBiometrics')}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
+            </label>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer ml-4">
-            <input
-              type="checkbox"
-              checked={settings.saveBiometrics}
-              onChange={() => handleToggle('saveBiometrics')}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-          </label>
-        </div>
+        </SettingsCard>
 
         {/* Share Analytics */}
-        <div className="flex items-start justify-between p-4 rounded-lg border border-black/20 dark:border-white/20">
-          <div className="flex-1">
-            <h3 className="font-semibold text-black dark:text-white mb-1">
-              Anonymous Usage Analytics
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Help improve the app by sharing anonymous usage data
-            </p>
+        <SettingsCard
+          title="Anonymous Usage Analytics"
+          description="Help improve the app by sharing anonymous usage data"
+        >
+          <div className="flex items-center justify-end">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.shareAnalytics}
+                onChange={() => handleToggle('shareAnalytics')}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
+            </label>
           </div>
-          <label className="relative inline-flex items-center cursor-pointer ml-4">
-            <input
-              type="checkbox"
-              checked={settings.shareAnalytics}
-              onChange={() => handleToggle('shareAnalytics')}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-300 dark:bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black dark:peer-checked:bg-white"></div>
-          </label>
-        </div>
+        </SettingsCard>
 
         {/* Auto Delete */}
-        <div className="p-4 rounded-lg border border-black/20 dark:border-white/20">
-          <h3 className="font-semibold text-black dark:text-white mb-3">Auto-Delete Old Data</h3>
+        <SettingsCard title="Auto-Delete Old Data">
           <select
             value={settings.autoDeleteAfter}
             onChange={e => handleAutoDeleteChange(e.target.value)}
@@ -107,15 +100,15 @@ export function PrivacySettings({ onChangesMade }: SettingsSectionProps) {
             <option value="90">After 90 days</option>
             <option value="never">Never</option>
           </select>
-        </div>
+        </SettingsCard>
 
         {/* Privacy Notice */}
-        <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+        <SettingsCard variant="info" title="Privacy First">
           <p className="text-sm text-blue-900 dark:text-blue-100">
-            <strong>🔒 Privacy First:</strong> All verification processing happens locally on your
-            device. Your biometric data never leaves your browser.
+            All verification processing happens locally on your device. Your biometric data never
+            leaves your browser.
           </p>
-        </div>
+        </SettingsCard>
       </div>
     </div>
   );

@@ -5,3 +5,4 @@ export { NotificationSettings } from './NotificationSettings';
 export { WalletSettings } from './WalletSettings';
 export { ExportImportSettings } from './ExportImportSettings';
 export { ClearDataSettings } from './ClearDataSettings';
+export { SettingsCard } from './SettingsCard';
